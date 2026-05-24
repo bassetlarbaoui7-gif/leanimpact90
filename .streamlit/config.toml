@@ -1,0 +1,14 @@
+[theme]
+# Theme AlignPro / LI90 - dark professionnel + accent orange
+base = "dark"
+primaryColor = "#f97316"
+backgroundColor = "#0a0a0f"
+secondaryBackgroundColor = "#111118"
+textColor = "#f4f4f5"
+font = "sans serif"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true

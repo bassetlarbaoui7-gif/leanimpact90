@@ -1,0 +1,60 @@
+# --- Python ---------------------------------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# --- Environnements virtuels Python --------------------------------------
+venv/
+env/
+.venv/
+.env
+
+# --- Streamlit ------------------------------------------------------------
+.streamlit/secrets.toml
+
+# --- Donnees locales (base + modeles IA) ---------------------------------
+# La base SQLite et les modeles entrainees ne montent pas sur GitHub :
+# Streamlit Cloud les recreera au premier demarrage.
+*.db
+*.db-journal
+li90.db
+models/*.pkl
+models/*.onnx
+models/*.json
+models/*.csv
+
+# --- Backups dev (pour rollback rapide) ----------------------------------
+*.backup_v1
+*.backup_v2
+*.bak
+
+# --- Python portable embarque (poids enorme) -----------------------------
+python-portable/
+
+# --- IDE / OS -------------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# --- Logs / temporaires --------------------------------------------------
+*.log
+logs/
+tmp/
+*.tmp
+
+# --- PyInstaller (etape 8 packaging) -------------------------------------
+build/
+dist/
+*.spec
+!LI90.spec
+
+# --- Code v0 de reference (lourd, pas necessaire au runtime) -------------
+logiciel/
+ai-software-for-industry.zip
