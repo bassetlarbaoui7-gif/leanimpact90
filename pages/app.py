@@ -224,45 +224,6 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    # Bouton de bascule entre les deux modes (en haut de sidebar).
-    # Si on est en B, on propose d'aller en A et vice-versa.
-    cur_view = st.session_state.get("view", "A")
-    mode_actuel = (
-        "Projet d'amelioration continue" if cur_view == "B"
-        else "Stabiliser une ligne"
-    )
-    autre_view = "A" if cur_view == "B" else "B"
-    autre_label = (
-        "Stabiliser une ligne" if cur_view == "B"
-        else "Projet d'amelioration continue"
-    )
-
-    st.markdown(
-        f"""
-        <div style="font-size:11px; color:{COLOR_TEXT_MUTED};
-                    text-transform:uppercase; letter-spacing:0.06em;
-                    margin: 2px 0 6px 0;">
-          Mode actuel
-        </div>
-        <div style="font-size:13px; color:{COLOR_PRIMARY};
-                    font-weight:600; margin-bottom: 12px;">
-          {mode_actuel}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    if st.button(
-        f"↻  Basculer vers {autre_label}",
-        use_container_width=True,
-        key="btn_switch_view",
-        help="Change de mode sans perdre tes donnees",
-    ):
-        st.session_state["view"] = autre_view
-        st.rerun()
-    view = cur_view  # pour la navigation ci-dessous
-
-    st.markdown("---")
-
     # Selecteur de role
     role_keys = list(ROLE_LABELS.keys())
     role_lbls = list(ROLE_LABELS.values())
@@ -280,6 +241,7 @@ with st.sidebar:
     st.markdown("---")
 
     # Navigation : juste les pages du mode actuel
+    view = st.session_state.get("view", "A")
     if view == "A":
         cur_role_key = st.session_state.get("role", "ac_manager")
         nav_opts = NAV_A_BY_ROLE.get(cur_role_key, NAV_A)
@@ -340,9 +302,60 @@ TITLES_B = {
 }
 
 # ---------------------------------------------------------------------------
+# Switcher de vue (toggle en haut de page, style segmented control pro)
+# ---------------------------------------------------------------------------
+def _render_view_switcher() -> None:
+    cur = st.session_state.get("view", "A")
+    st.markdown(
+        f"""
+        <style>
+          .li90-switch-wrap {{
+            display:flex; justify-content:center;
+            margin: 0 0 18px 0;
+          }}
+          .li90-switch {{
+            display:inline-flex;
+            padding: 4px;
+            background: {COLOR_CARD};
+            border: 1px solid {COLOR_BORDER};
+            border-radius: 12px;
+            gap: 4px;
+          }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    col_l, col_c, col_r = st.columns([1, 4, 1])
+    with col_c:
+        b1, b2 = st.columns(2, gap="small")
+        with b1:
+            if st.button(
+                "Stabiliser une ligne",
+                use_container_width=True,
+                type="primary" if cur == "A" else "secondary",
+                key="vsw_btn_a",
+            ):
+                if cur != "A":
+                    st.session_state["view"] = "A"
+                    st.rerun()
+        with b2:
+            if st.button(
+                "Projet d'amelioration continue",
+                use_container_width=True,
+                type="primary" if cur == "B" else "secondary",
+                key="vsw_btn_b",
+            ):
+                if cur != "B":
+                    st.session_state["view"] = "B"
+                    st.rerun()
+
+
+# ---------------------------------------------------------------------------
 # Routage Vue B : les 6 fonctionnalites du Projet d'amelioration continue.
 # Chaque page vit dans vue_b/fX_*.py et expose une fonction render().
 # ---------------------------------------------------------------------------
+_render_view_switcher()
+
 if st.session_state.get("view") == "B":
     # Import local (evite le cout au demarrage de la Vue A)
     from core import db as core_db
