@@ -103,7 +103,7 @@ HERO_THREEJS = r"""
   <div class="overlay"></div>
   <div class="content">
     <div class="tag"><span class="dot"></span> Le systeme nerveux de votre usine</div>
-    <h1>De l'incident a<br><span class="accent">l'excellence</span><br>automatiquement</h1>
+    <h1>De l'incident a<br><span class="accent">l'excellence</span><br>operationnelle</h1>
     <p class="sub">
       LI90 guide votre equipe du signal terrain jusqu'a la solution deployee.
       <span class="bold">L'IA analyse. Vous validez. C'est tout.</span>
@@ -607,33 +607,6 @@ if st.session_state["landing_step"] == "hero":
         """,
         unsafe_allow_html=True,
     )
-
-    # --- Acces beta a la nouvelle UX (Mission Control) -------------------
-    st.markdown("<div style='height:30px'></div>", unsafe_allow_html=True)
-    col_mc_l, col_mc, col_mc_r = st.columns([1, 2, 1])
-    with col_mc:
-        st.markdown(
-            f"""
-            <div style='text-align:center; margin: 0 0 10px 0;
-                       font-size:11.5px; color:{COLOR_TEXT_MUTED};
-                       text-transform:uppercase; letter-spacing:0.08em;'>
-              Beta — nouvelle experience
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if st.button(
-            "Essayer Mission Control →",
-            use_container_width=True,
-            key="btn_mission_control",
-            help=("Nouvelle interface : 1 seul ecran qui te montre quoi"
-                  " faire selon ton role. Tu peux revenir aux 2 vues"
-                  " classiques quand tu veux."),
-        ):
-            # Ne demande pas le role - utilise celui stocke ou ac_manager
-            st.session_state.setdefault("role", "ac_manager")
-            st.session_state["entered_app"] = True
-            st.switch_page("pages/mission_control.py")
 
     _render_workflow_section()
     _render_kpi_section()

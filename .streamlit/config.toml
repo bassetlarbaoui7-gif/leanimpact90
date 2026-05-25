@@ -12,3 +12,8 @@ gatherUsageStats = false
 
 [server]
 headless = true
+
+[client]
+# Cache le menu hamburger et le bouton "View source" qui revele le repo GitHub
+toolbarMode = "viewer"
+showErrorDetails = false

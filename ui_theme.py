@@ -46,6 +46,18 @@ CSS = f"""
 [data-testid="stSidebarNav"] {{ display: none !important; }}
 [data-testid="stSidebarNavItems"] {{ display: none !important; }}
 
+/* ----- Cache le bouton "Deploy" / menu hamburger / footer Streamlit ----- */
+[data-testid="stToolbar"] {{ display: none !important; }}
+[data-testid="stDecoration"] {{ display: none !important; }}
+[data-testid="stStatusWidget"] {{ display: none !important; }}
+#MainMenu {{ visibility: hidden !important; }}
+header {{ visibility: hidden !important; height: 0 !important; }}
+footer {{ visibility: hidden !important; height: 0 !important; }}
+.viewerBadge_container__r5tak {{ display: none !important; }}
+.viewerBadge_link__1S137 {{ display: none !important; }}
+a[href*="github.com"][href*="bassetlarbaoui"] {{ display: none !important; }}
+a[href*="streamlit.io"] {{ display: none !important; }}
+
 /* ----- Reset Streamlit dark + tokens ------------------------------- */
 .stApp {{
     background: {COLOR_BG} !important;
