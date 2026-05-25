@@ -28,7 +28,7 @@ from report import generate_pdf
 from ui_theme import (
     inject_theme, page_header, section, pill,
     COLOR_PRIMARY, COLOR_TEXT, COLOR_TEXT_MUTED, COLOR_DANGER, COLOR_OK,
-    COLOR_BORDER,
+    COLOR_BORDER, COLOR_CARD,
 )
 
 
