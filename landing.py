@@ -105,8 +105,9 @@ HERO_THREEJS = r"""
     <div class="tag"><span class="dot"></span> Le systeme nerveux de votre usine</div>
     <h1>De l'incident a<br><span class="accent">l'excellence</span><br>operationnelle</h1>
     <p class="sub">
-      LI90 guide votre equipe du signal terrain jusqu'a la solution deployee.
-      <span class="bold">L'IA analyse. Vous validez. C'est tout.</span>
+      Diviser par 2 le temps pour obtenir des resultats d'amelioration
+      continue fiables.
+      <span class="bold">Sans reunion. Sans Excel. Sans charge mentale.</span>
     </p>
     <div class="badges">
       <div class="b">
@@ -314,27 +315,27 @@ HERO_THREEJS = r"""
 # Sections en-dessous du hero (workflow 6 etapes, KPI, CTA, footer)
 # ---------------------------------------------------------------------------
 WORKFLOW_STEPS = [
-    {"n": "1", "title": "Collecte",      "desc": "Saisie operateur",
-     "detail": "Form + audio depuis le terrain, requete SQL auto"},
-    {"n": "2", "title": "Cadrage",       "desc": "QQOQCP",
-     "detail": "Le Resp. AC cadre le probleme avec precision"},
-    {"n": "3", "title": "Cause racine",  "desc": "IA Ishikawa 5M",
-     "detail": "Causes racines avec probabilites et niveau de preuve"},
-    {"n": "4", "title": "Validation",    "desc": "0 reunion",
-     "detail": "Resp. Prod + Tech N+1 valident dans le logiciel"},
-    {"n": "5", "title": "Faisabilite",   "desc": "Gains par role",
-     "detail": "Cout / temps / gain traduit pour chaque direction"},
-    {"n": "6", "title": "Suivi",         "desc": "ROI reel",
-     "detail": "Plan d'action priorise, statuts, ROI mesure"},
+    {"n": "1", "title": "Signaler",  "desc": "30 secondes",
+     "detail": "Depuis le poste, l'incident est trace"},
+    {"n": "2", "title": "Cadrer",    "desc": "Une fois pour toutes",
+     "detail": "Le probleme est clair pour tout le monde"},
+    {"n": "3", "title": "Comprendre","desc": "La vraie cause",
+     "detail": "On va jusqu'au fond, sans blamer l'humain"},
+    {"n": "4", "title": "Aligner",   "desc": "Zero reunion",
+     "detail": "Chaque acteur valide depuis son poste"},
+    {"n": "5", "title": "Decider",   "desc": "Avec le gain",
+     "detail": "Cout, temps, gain visibles pour chacun"},
+    {"n": "6", "title": "Suivre",    "desc": "Jusqu'au resultat",
+     "detail": "Les actions vivent, le ROI se mesure"},
 ]
 
 KPI_ITEMS = [
-    {"metric": "3 min",  "label": "Cause racine identifiee",
-     "desc": "L'IA analyse historique + capteurs + retours terrain"},
-    {"metric": "0",      "label": "Reunions pour valider",
-     "desc": "Chaque acteur valide dans son contexte, en parallele"},
-    {"metric": "+23%",   "label": "OEE en moyenne",
-     "desc": "Actions deployees avec micro-formations automatiques"},
+    {"metric": "x2",     "label": "Plus rapide qu'avant",
+     "desc": "Resultats fiables en moitie moins de temps"},
+    {"metric": "0",      "label": "Reunion pour valider",
+     "desc": "Chacun valide depuis son poste, quand il peut"},
+    {"metric": "-80%",   "label": "D'Excel et de fichiers perdus",
+     "desc": "Une seule source de verite, partagee, vivante"},
 ]
 
 
@@ -415,10 +416,10 @@ def _render_workflow_section() -> None:
           }}
         </style>
         <div class="wf-section">
-          <span class="lbl">Le flux complet</span>
-          <h2>Un workflow qui vous guide</h2>
-          <p class="sub">Chaque etape est claire. Vous savez toujours ou vous en
-          etes et quoi faire ensuite.</p>
+          <span class="lbl">Du terrain au resultat</span>
+          <h2>Ce qui change dans votre quotidien</h2>
+          <p class="sub">Vous savez ce que vous faites, vous savez pourquoi,
+          vous voyez le resultat. Le reste, le logiciel s'en occupe.</p>
           <div class="wf-grid">{cards_html}</div>
         </div>
         """,

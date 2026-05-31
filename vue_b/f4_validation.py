@@ -26,12 +26,11 @@ def render() -> None:
     user_name = st.session_state.get("user_name", "")
 
     with st.container(border=True):
-        section("Projets en attente de validation",
-                "Resp. Production et Technicien N+1 valident en parallele,"
-                " chacun dans son contexte.")
+        section("A valider de votre cote",
+                "Chacun valide depuis son poste. Pas besoin de se reunir.")
         df = db.list_projets_ac(statut="validation_en_cours")
         if df.empty:
-            st.info("Aucun projet en attente de validation pour le moment.")
+            st.info("Rien a valider pour le moment.")
             return
 
         cols_show = ["id", "titre", "cree_par", "cree_le"]
@@ -40,7 +39,7 @@ def render() -> None:
 
         if not _can_validate(role):
             st.caption(
-                "Ton role ne permet pas de valider (Operateur lecture seule)."
+                "Tu peux consulter mais pas valider depuis ce role."
             )
             return
 
@@ -63,7 +62,7 @@ def render() -> None:
                 "Commentaire (optionnel)", value="",
             )
 
-        if st.button("Enregistrer ma validation", type="primary",
+        if st.button("Envoyer ma decision", type="primary",
                      use_container_width=True):
             # Trace la validation
             db.add_validation(
@@ -73,8 +72,6 @@ def render() -> None:
                 nom_valideur=user_name,
                 commentaire=commentaire,
             )
-            # Transition workflow simpliste : 1 validation suffit ici.
-            # La logique 'attendre les 2 valideurs' viendra en etape 5.
             target_state = (
                 ProjetStatus.VALIDE if decision == "valide"
                 else ProjetStatus.REFUSE
@@ -82,9 +79,9 @@ def render() -> None:
             ok, msg = workflow.transition(int(target_id), target_state)
             if ok:
                 st.success(
-                    f"Projet #{int(target_id)} : decision '{decision}'"
-                    f" enregistree, statut → {target_state.value}."
+                    f"Decision enregistree pour le projet #{int(target_id)}. "
+                    f"L'equipe est tenue au courant."
                 )
                 st.rerun()
             else:
-                st.warning(f"Transition refusee : {msg}")
+                st.warning(f"Pas encore possible : {msg}")

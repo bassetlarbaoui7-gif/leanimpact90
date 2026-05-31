@@ -282,23 +282,23 @@ TITLES = {
 
 TITLES_B = {
     "1. Collecte terrain":
-        ("Collecte terrain",
-         "Operateur saisit l'incident, audio + requete SQL automatique"),
+        ("Signaler",
+         "Le terrain remonte ce qu'il voit en 30 secondes."),
     "2. Cadrage du probleme":
-        ("Cadrage du probleme",
-         "QQOQCP - le Resp. AC cadre avec precision"),
+        ("Cadrer",
+         "Le probleme est clair, une fois pour toutes."),
     "3. Cause racine IA":
-        ("Cause racine IA",
-         "Moteur Ishikawa 5M avec LightGBM + SHAP + ONNX"),
+        ("Comprendre",
+         "Trouver la vraie cause, pas blamer l'humain."),
     "4. Validation distribuee":
-        ("Validation distribuee",
-         "Resp. Prod + Tech N+1 valident sans reunion"),
+        ("Aligner",
+         "Chacun valide depuis son poste. Zero reunion."),
     "5. Solution & faisabilite":
-        ("Solution & faisabilite",
-         "Etude automatique + gains traduits par role"),
+        ("Decider",
+         "Le gain visible pour chaque role. On choisit."),
     "6. Suivi d'action":
-        ("Suivi d'action",
-         "Plan d'action priorise, statuts, ROI reel"),
+        ("Suivre",
+         "Les actions vivent. Le ROI se mesure."),
 }
 
 # ---------------------------------------------------------------------------

@@ -18,12 +18,11 @@ from ui_theme import COLOR_PRIMARY, COLOR_TEXT_MUTED, section
 
 def render() -> None:
     with st.container(border=True):
-        section("Projets valides - en attente de solution",
-                "Le Resp. AC propose la solution et le logiciel etudie"
-                " la faisabilite.")
+        section("Pret a decider",
+                "L'equipe a aligne. A vous de choisir la solution.")
         df = db.list_projets_ac(statut="valide")
         if df.empty:
-            st.info("Aucun projet valide en attente. Va sur F4 pour valider.")
+            st.info("Rien a decider pour l'instant.")
         else:
             cols_show = ["id", "titre", "cree_par", "cree_le"]
             cols_show = [c for c in cols_show if c in df.columns]
@@ -32,24 +31,30 @@ def render() -> None:
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
-    # Carte explicative : traduction des gains par role (etape 6)
+    # Carte : chaque role voit le gain dans SA langue
     st.markdown(
         f"""
         <div style="padding:20px 22px; background:#111118;
                     border:1px solid #27272f; border-radius:14px;">
-          <div style="font-weight:700; color:white; margin-bottom:10px;">
-            Traduction des gains par role (etape 6)
+          <div style="font-weight:700; color:white; margin-bottom:6px;">
+            Le gain visible pour chacun
+          </div>
+          <div style="color:{COLOR_TEXT_MUTED}; font-size:12.5px;
+                      margin-bottom:14px;">
+            Pas de chiffres abstraits. Chaque role voit ce qui compte
+            pour lui.
           </div>
           <div style="display:grid; grid-template-columns:repeat(3, 1fr);
                       gap:14px;">
             <div>
               <div style="font-size:12px; color:{COLOR_PRIMARY};
                           font-weight:600; margin-bottom:4px;">
-                Resp. Production
+                Responsable Production
               </div>
               <div style="color:{COLOR_TEXT_MUTED}; font-size:12.5px;
                           line-height:1.55;">
-                +X% productivite, +Y€/mois, payback Z mois
+                Productivite gagnee, euros par mois, retour sur
+                investissement
               </div>
             </div>
             <div>
@@ -59,7 +64,8 @@ def render() -> None:
               </div>
               <div style="color:{COLOR_TEXT_MUTED}; font-size:12.5px;
                           line-height:1.55;">
-                -A interventions / semaine, gain de B heures
+                Interventions evitees, heures recuperees,
+                moins de stress
               </div>
             </div>
             <div>
@@ -69,7 +75,8 @@ def render() -> None:
               </div>
               <div style="color:{COLOR_TEXT_MUTED}; font-size:12.5px;
                           line-height:1.55;">
-                Setup -C min, -D defauts par poste
+                Temps de setup reduit, moins de defauts, poste plus
+                serein
               </div>
             </div>
           </div>

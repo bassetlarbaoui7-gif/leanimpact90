@@ -61,7 +61,7 @@ def render() -> None:
     # --- Formulaire de saisie ----------------------------------------------
     with st.container(border=True):
         section("Nouveau signalement",
-                "L'operateur saisit ce qu'il observe. Audio + photo : etape 3.")
+                "Ce que tu vois sur le terrain, en 30 secondes.")
         col1, col2 = st.columns(2)
         with col1:
             machine = st.text_input("Machine", placeholder="ex: M3 - Soudeuse")
@@ -91,8 +91,8 @@ def render() -> None:
                 disabled=not machine.strip(),
             )
         with col_info:
-            st.caption("L'incident sera marque 'brut'. Le Technicien N+1"
-                       " l'enrichira et le transmettra a la suite.")
+            st.caption("Une fois saisi, l'incident est transmis. "
+                       "Tu n'as pas besoin d'en faire plus.")
         if submit:
             iid = db.create_incident(
                 machine=machine,
@@ -108,8 +108,8 @@ def render() -> None:
     # --- Liste des incidents bruts ----------------------------------------
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
     with st.container(border=True):
-        section("Incidents en attente de fiabilisation",
-                "Le Technicien N+1 nettoie, complete, puis valide.")
+        section("Incidents en attente",
+                "A reprendre pour la suite.")
         df = db.list_incidents(statut="brut")
         if df.empty:
             st.info("Aucun incident brut en attente.")

@@ -137,10 +137,19 @@ ALL_SCHEMAS = (
 
 
 def init_db(db_path: Path | str | None = None) -> None:
-    """Cree les tables si elles n'existent pas. Idempotent."""
+    """Cree toutes les tables si elles n'existent pas. Idempotent.
+
+    Cree :
+      - 4 tables de base (incidents, projets_ac, validations, actions)
+      - 4 tables CBR (entreprises, chemins_pourquoi, evidence, feedback_chemins)
+        + ajoute entreprise_id sur incidents/projets_ac
+    """
     with connect(db_path) as conn:
         for schema in ALL_SCHEMAS:
             conn.executescript(schema)
+    # Import local pour eviter une circular dependency au module-level
+    from core.cbr.case_base import init_cbr_tables
+    init_cbr_tables(db_path)
 
 
 # ---------------------------------------------------------------------------

@@ -19,8 +19,8 @@ def render() -> None:
 
     # --- Demarrer un projet a partir d'un incident fiabilise --------------
     with st.container(border=True):
-        section("Demarrer un nouveau projet AC",
-                "Choisir un incident fiabilise et lui donner un titre.")
+        section("Cadrer un probleme",
+                "Choisis un incident a traiter, donne-lui un nom clair.")
         df_fia = db.list_incidents(statut="fiabilise")
         if df_fia.empty:
             st.info("Aucun incident fiabilise pour le moment. "
@@ -50,12 +50,12 @@ def render() -> None:
                 )
             disabled = (not titre.strip()) or (role == "operator")
             if st.button(
-                "Demarrer le projet AC",
+                "Demarrer",
                 type="primary",
                 use_container_width=True,
                 disabled=disabled,
-                help=("Reserve aux roles non-operateur" if role == "operator"
-                      else "Cree un projet et passe l'incident en 'en_projet'"),
+                help=("Reserve aux non-operateurs" if role == "operator"
+                      else "Crée le projet, on passe à la suite"),
             ):
                 pid = db.create_projet_ac(
                     titre=titre,
@@ -65,9 +65,7 @@ def render() -> None:
                 )
                 db.update_incident_statut(int(target_id), "en_projet")
                 st.success(
-                    f"Projet AC #{pid} cree (statut: cadrage). "
-                    f"Le formulaire QQOQCP complet sera disponible "
-                    f"en etape 4."
+                    f"Projet #{pid} cree. Tu peux passer a Comprendre."
                 )
                 st.rerun()
 
@@ -75,20 +73,15 @@ def render() -> None:
 
     # --- Projets en cours de cadrage --------------------------------------
     with st.container(border=True):
-        section("Projets en cadrage",
-                "Le Resp. AC remplit le QQOQCP pour chaque ligne.")
+        section("Problemes en cours de cadrage",
+                "A reprendre pour passer a la suite.")
         df = db.list_projets_ac(statut="cadrage")
         if df.empty:
-            st.info("Aucun projet en cadrage actuellement.")
+            st.info("Rien a cadrer pour l'instant.")
         else:
             cols_show = ["id", "titre", "incident_id", "cree_par",
                          "cree_par_role", "cree_le"]
             cols_show = [c for c in cols_show if c in df.columns]
             st.dataframe(
                 df[cols_show], use_container_width=True, hide_index=True,
-            )
-            st.caption(
-                "Formulaire QQOQCP (qui / quoi / ou / quand / comment / "
-                "pourquoi) viendra en etape 4 - on branchera aussi le "
-                "moteur IA cause racine (F3 V2) directement apres."
             )

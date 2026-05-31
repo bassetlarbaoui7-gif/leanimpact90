@@ -66,11 +66,10 @@ def render() -> None:
     # --- Creation manuelle d'une action ----------------------------------
     df_proj = db.list_projets_ac()
     with st.container(border=True):
-        section("Ajouter une action a un projet",
-                "Plan d'action priorise. Le suivi automatique du ROI"
-                " arrive en etape 7.")
+        section("Ajouter une action",
+                "Pour que la solution se transforme en resultat.")
         if df_proj.empty:
-            st.info("Aucun projet AC pour l'instant.")
+            st.info("Aucun projet en cours.")
         else:
             opts = list(df_proj["id"].astype(int))
             id_to_lbl = {
@@ -97,7 +96,7 @@ def render() -> None:
                                             "3 (basse)"
                                         ))
             assignee = st.text_input("Assignee", placeholder="ex: Tech equipe A")
-            if st.button("Creer l'action", type="primary",
+            if st.button("Creer", type="primary",
                          disabled=not titre_action.strip(),
                          use_container_width=True):
                 aid = db.add_action(
@@ -106,18 +105,18 @@ def render() -> None:
                     assignee=assignee,
                     priorite=priorite,
                 )
-                st.success(f"Action #{aid} creee (statut: a_faire).")
+                st.success(f"Action #{aid} creee. A toi de la suivre.")
                 st.rerun()
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
     # --- Plan d'action global --------------------------------------------
     with st.container(border=True):
-        section("Plan d'action global",
-                "Trie par priorite (critique en haut).")
+        section("Toutes vos actions",
+                "Le critique d'abord. Personne n'oublie.")
         df = db.list_actions()
         if df.empty:
-            st.info("Aucune action enregistree.")
+            st.info("Pas encore d'action a suivre.")
         else:
             cols_show = ["id", "projet_id", "titre", "assignee",
                          "priorite", "statut", "echeance", "cree_le"]
