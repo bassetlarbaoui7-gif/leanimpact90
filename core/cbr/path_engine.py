@@ -25,6 +25,7 @@ import pandas as pd
 from core import db
 from core.cbr import case_base as cb
 from core.cbr.similarity import find_similar_cases, incident_to_case_dict
+from core.cbr.feedback import compute_chemin_weight
 
 
 # ---------------------------------------------------------------------------
@@ -136,8 +137,11 @@ def _extract_paths_from_similar(
     Pour chaque cas similaire, trouve son projet AC associe et
     extrait son arbre 5 Pourquoi pour la branche M demandee.
 
-    Retourne une liste de chemins (chaque chemin = liste de noeuds dict).
-    Trie : cas le plus similaire en premier.
+    Chaque chemin est aussi pondere par le poids feedback de sa cause
+    racine (apprentissage CBR auto-actif).
+
+    Retourne une liste de chemins triee par score combine (similarite +
+    poids feedback) decroissant.
     """
     if similar_cases.empty:
         return []
@@ -157,11 +161,25 @@ def _extract_paths_from_similar(
             )
             if arbre.empty:
                 continue
+            # Poids feedback : on prend celui de la cause racine de la chaine
+            noeuds = arbre.to_dict("records")
+            racine = next(
+                (n for n in noeuds if n.get("est_cause_racine")),
+                noeuds[-1] if noeuds else None,
+            )
+            poids_feedback = (
+                compute_chemin_weight(int(racine["id"]), db_path=db_path)
+                if racine else 1.0
+            )
             chemins.append({
                 "source_cas_id":  cas_id,
                 "similarite_cas": sim,
-                "noeuds":         arbre.to_dict("records"),
+                "poids_feedback": poids_feedback,
+                "score":          sim * poids_feedback,
+                "noeuds":         noeuds,
             })
+    # Trier par score combine (similarite x feedback)
+    chemins.sort(key=lambda c: -c["score"])
     return chemins
 
 
@@ -299,8 +317,7 @@ def generate_full_tree(
             similar, branche, db_path=db_path,
         )
         if chemins_hist:
-            # CBR pur : on prend le meilleur chemin historique
-            chemins_hist.sort(key=lambda c: -c["similarite_cas"])
+            # CBR pur : meilleur chemin historique (deja trie par score combine)
             best = chemins_hist[0]
             noeuds = _path_from_historical(best, new_case, branche)
         else:
