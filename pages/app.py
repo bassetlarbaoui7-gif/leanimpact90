@@ -245,11 +245,17 @@ with st.sidebar:
     if view == "A":
         cur_role_key = st.session_state.get("role", "ac_manager")
         nav_opts = NAV_A_BY_ROLE.get(cur_role_key, NAV_A)
+        nav_key  = "nav_a_page"
     else:
         nav_opts = NAV_B
+        nav_key  = "nav_b_page"
+    # Si la valeur memorisee n'est pas dans les options actuelles, la reset
+    if (st.session_state.get(nav_key) not in nav_opts):
+        st.session_state[nav_key] = nav_opts[0]
     page = st.radio(
         "Navigation",
         options=nav_opts,
+        key=nav_key,
         label_visibility="collapsed",
     )
 
