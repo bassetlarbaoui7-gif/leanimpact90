@@ -609,7 +609,8 @@ if st.session_state["landing_step"] == "hero":
         unsafe_allow_html=True,
     )
 
-    _render_workflow_section()
+    # Section workflow 6 etapes retiree de la landing (principe Kent :
+    # moins d'info technique, plus de curiosite pour provoquer un contact).
     _render_kpi_section()
     _render_footer()
 
