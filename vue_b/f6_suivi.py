@@ -13,6 +13,7 @@ import streamlit as st
 
 from core import db
 from ui_theme import COLOR_TEXT_MUTED, COLOR_OK, COLOR_DANGER, section
+from vue_b.synthese import render_synthese
 
 
 STATUTS_ACTION = ["a_faire", "en_cours", "fait", "bloque"]
@@ -124,3 +125,6 @@ def render() -> None:
             st.dataframe(
                 df[cols_show], use_container_width=True, hide_index=True,
             )
+
+    # --- Gains & livrables de l'etape ------------------------------------
+    render_synthese("f6")

@@ -24,6 +24,7 @@ from ui_theme import (
     COLOR_PRIMARY, COLOR_TEXT, COLOR_TEXT_MUTED, COLOR_OK,
     COLOR_DANGER, COLOR_CARD, COLOR_BORDER, section,
 )
+from vue_b.synthese import render_synthese
 
 _TYPE_COLORS = {
     "symptome":      COLOR_TEXT_MUTED,
@@ -307,6 +308,66 @@ def render() -> None:
                                   etats=etats)
         st.markdown(svg, unsafe_allow_html=True)
 
+    # --- Correction humaine d'un noeud (l'IA propose, vous decidez) ---
+    with st.expander("✎ Corriger un noeud de l'analyse", expanded=False):
+        st.caption(
+            "L'IA propose, vous decidez. Votre correction est enregistree "
+            "et entraine le modele pour les prochains cas."
+        )
+        branche_corr = st.selectbox(
+            "Branche", options=list(BRANCHES_5M), key="f3_corr_branche",
+        )
+        chaine_df = cb.list_chemins_projet(
+            projet_id, branche_m=branche_corr,
+        )
+        if chaine_df.empty:
+            st.info("Aucun noeud dans cette branche.")
+        else:
+            chaine_df = chaine_df.sort_values("niveau")
+            node_ids = list(chaine_df["id"].astype(int))
+            id_to_node = {
+                int(r["id"]): (f"N{int(r['niveau'])} — "
+                               f"{str(r['reponse'])[:70]}")
+                for _, r in chaine_df.iterrows()
+            }
+            node_id = st.selectbox(
+                "Noeud a corriger", options=node_ids,
+                format_func=lambda i: id_to_node.get(i, str(i)),
+                key="f3_corr_node",
+            )
+            current = chaine_df[chaine_df["id"] == node_id].iloc[0]
+            new_reponse = st.text_input(
+                "Nouvelle formulation",
+                value=str(current["reponse"]),
+                key="f3_corr_txt",
+            )
+            col_c1, col_c2 = st.columns([1, 1])
+            with col_c1:
+                mark_root = st.checkbox(
+                    "Marquer comme cause racine",
+                    value=bool(current.get("est_cause_racine")),
+                    key="f3_corr_root",
+                )
+            with col_c2:
+                if st.button("Enregistrer la correction",
+                             type="primary",
+                             use_container_width=True,
+                             key="f3_corr_save",
+                             disabled=not new_reponse.strip()):
+                    ok = cb.update_chemin(
+                        int(node_id),
+                        reponse=new_reponse.strip(),
+                        est_cause_racine=mark_root,
+                    )
+                    if ok:
+                        st.success(
+                            "Noeud corrige. Le modele tiendra compte de "
+                            "cette formulation a la validation."
+                        )
+                        st.rerun()
+                    else:
+                        st.error("Correction impossible (noeud introuvable).")
+
     # --- Validation 1 clic ---
     st.markdown("<div style='height:18px'></div>", unsafe_allow_html=True)
     col_v1, col_v2 = st.columns([2, 1])
@@ -333,3 +394,6 @@ def render() -> None:
             "En validant, vous gagnez du temps pour la prochaine fois : "
             "le logiciel s'en souvient."
         )
+
+    # --- Gains & livrables de l'etape ---
+    render_synthese("f3")

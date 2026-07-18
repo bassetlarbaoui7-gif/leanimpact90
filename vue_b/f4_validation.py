@@ -26,6 +26,7 @@ from ui_theme import (
     COLOR_PRIMARY, COLOR_TEXT, COLOR_TEXT_MUTED, COLOR_OK, COLOR_DANGER,
     COLOR_CARD, COLOR_BORDER, section,
 )
+from vue_b.synthese import render_synthese
 
 
 # Groupes de roles - qui valide quoi
@@ -371,3 +372,6 @@ def render() -> None:
     else:
         # ac_manager / ceo / autres : vue observateur
         _render_vue_observateur(df)
+
+    # --- Gains & livrables de l'etape ------------------------------------
+    render_synthese("f4")

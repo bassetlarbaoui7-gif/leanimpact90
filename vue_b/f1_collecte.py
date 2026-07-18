@@ -16,6 +16,7 @@ import streamlit as st
 from core import db
 from data_loader import load_file, list_excel_sheets
 from ui_theme import COLOR_TEXT_MUTED, COLOR_PRIMARY, COLOR_OK, section
+from vue_b.synthese import render_synthese
 
 
 SEVERITES = ["faible", "moyenne", "haute", "critique"]
@@ -379,3 +380,6 @@ def render() -> None:
 
     # --- CTA : Analyser la cause racine ---------------------------------
     _render_cta_analyser()
+
+    # --- Gains & livrables de l'etape ------------------------------------
+    render_synthese("f1")
