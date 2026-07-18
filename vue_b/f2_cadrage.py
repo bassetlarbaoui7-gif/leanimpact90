@@ -73,17 +73,19 @@ def _wizard_qqoqccp(incident: dict, defaut: dict) -> dict:
         f"QQOQCCP — pre-rempli, ne complete que le specifique</div>",
         unsafe_allow_html=True,
     )
+    # keys dynamiques : le pre-remplissage suit le defaut/incident choisis
+    suffix = f"{defaut['code']}_{incident.get('id', 0)}"
     col1, col2 = st.columns(2)
     with col1:
         quoi = st.text_input(
             "Quoi (le probleme)",
             value=defaut["quoi"] or (incident.get("description") or "")[:120],
-            key="f2_q_quoi",
+            key=f"f2_q_quoi_{suffix}",
         )
         ou = st.text_input(
             "Ou (ligne / machine / zone)",
             value=incident.get("machine") or "",
-            key="f2_q_ou",
+            key=f"f2_q_ou_{suffix}",
         )
         quand = st.text_input(
             "Quand (debut, evolution)",
@@ -173,55 +175,56 @@ def render() -> None:
                 )
             defaut = _defaut_by_label(label_defaut)
 
-            # 3. Titre auto-propose
+            # 3-6. Formulaire unique (st.form) : la saisie ne re-rend pas
+            # la page a chaque champ -> pas de clic accidentel, pas de
+            # perte de saisie. Un seul submit a la fin.
             titre_sugg = ""
             if defaut["code"] != "AUT-00":
                 titre_sugg = (f"Reduire {defaut['libelle'].lower()} — "
                               f"{incident.get('machine', '')}")
-            titre = st.text_input(
-                "Titre du projet AC",
-                value=titre_sugg,
-                placeholder="ex: Reduire les joints brases froids — CMS 2",
-                key="f2_titre",
-            )
-
-            # 4. Wizard QQOQCCP
-            qq = _wizard_qqoqccp(incident, defaut)
-
-            # 5. Containment dans le meme geste
-            st.markdown(
-                f"<div style='font-size:11px;font-weight:700;"
-                f"color:{COLOR_PRIMARY};text-transform:uppercase;"
-                f"letter-spacing:0.05em;margin:12px 0 4px;'>"
-                f"Containment — proteger le client tout de suite</div>",
-                unsafe_allow_html=True,
-            )
-            col_c1, col_c2 = st.columns([2, 1])
-            with col_c1:
-                containment_txt = st.text_input(
-                    "Action de protection immediate",
-                    placeholder=("ex: tri des lots depuis le 29/06 + "
-                                 "controle AOI renforce"),
-                    key="f2_containment",
-                )
-            with col_c2:
-                containment_qui = st.text_input(
-                    "Equipe notifiee",
-                    placeholder="ex: Chef equipe A",
-                    key="f2_containment_qui",
+            with st.form("f2_form_cadrage", clear_on_submit=False):
+                titre = st.text_input(
+                    "Titre du projet AC",
+                    value=titre_sugg,
+                    placeholder="ex: Reduire les joints brases froids — CMS 2",
+                    key=f"f2_titre_{defaut['code']}",
                 )
 
-            # 6. Creation
-            disabled = (not titre.strip()) or (role == "operator")
-            if st.button(
-                "Creer le projet cadre",
-                type="primary",
-                use_container_width=True,
-                disabled=disabled,
-                help=("Reserve aux non-operateurs" if role == "operator"
-                      else "Cree le projet avec QQOQCCP + containment"),
-                key="f2_submit",
-            ):
+                # Wizard QQOQCCP
+                qq = _wizard_qqoqccp(incident, defaut)
+
+                # Containment dans le meme geste
+                st.markdown(
+                    f"<div style='font-size:11px;font-weight:700;"
+                    f"color:{COLOR_PRIMARY};text-transform:uppercase;"
+                    f"letter-spacing:0.05em;margin:12px 0 4px;'>"
+                    f"Containment — proteger le client tout de suite</div>",
+                    unsafe_allow_html=True,
+                )
+                col_c1, col_c2 = st.columns([2, 1])
+                with col_c1:
+                    containment_txt = st.text_input(
+                        "Action de protection immediate",
+                        placeholder=("ex: tri des lots depuis le 29/06 + "
+                                     "controle AOI renforce"),
+                        key="f2_containment",
+                    )
+                with col_c2:
+                    containment_qui = st.text_input(
+                        "Equipe notifiee",
+                        placeholder="ex: Chef equipe A",
+                        key="f2_containment_qui",
+                    )
+
+                submitted = st.form_submit_button(
+                    "Creer le projet cadre",
+                    type="primary",
+                    use_container_width=True,
+                    disabled=(role == "operator"),
+                )
+            if submitted and not titre.strip():
+                st.error("Donne un titre au projet avant de creer.")
+            elif submitted:
                 pid = db.create_projet_ac(
                     titre=titre,
                     incident_id=int(target_id),

@@ -336,10 +336,12 @@ def render() -> None:
                 key="f3_corr_node",
             )
             current = chaine_df[chaine_df["id"] == node_id].iloc[0]
+            # key dynamique par noeud : le champ suit la selection et
+            # ne peut pas ecraser un autre noeud apres un rerun.
             new_reponse = st.text_input(
                 "Nouvelle formulation",
                 value=str(current["reponse"]),
-                key="f3_corr_txt",
+                key=f"f3_corr_txt_{int(node_id)}",
             )
             col_c1, col_c2 = st.columns([1, 1])
             with col_c1:
